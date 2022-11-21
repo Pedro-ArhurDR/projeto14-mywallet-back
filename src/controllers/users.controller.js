@@ -76,3 +76,16 @@ export async function SignUp(req,res){
         console.log(err,'erro no cadastro')
     }
 }
+
+export async function FinishSession(req,res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ","")
+
+    try{
+        await db.collection("sessions").deleteOne({ token });
+        res.status(200).send({ message: "Sessão finalizada" });
+    }
+    catch(err){
+        res.status(500).send({message:err.message})
+    }
+}

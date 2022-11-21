@@ -60,3 +60,21 @@ export async function enterRecord(req,res){
         res.sendStatus(500)
     }
 }
+
+export async function loadRecords(req,res){
+    const { authorization } = req.headers;
+    console.log(authorization,'seu token')
+    try{
+        const token = authorization?.replace("Bearer ","")
+        if(!token){
+        return res.sendStatus(401)
+        }
+        const session =  await db.collection("sessions").findOne({token})
+        const myId = session.userId.toString()
+        const myRecords = await db.collection("records").find({userId:myId}).toArray()
+        res.send(myRecords)
+    }
+    catch{
+        res.sendStatus(500)
+    }
+}
